@@ -1,0 +1,40 @@
+{
+  "name": "@dkh-dev/event-emitter",
+  "version": "1.0.0",
+  "description": "Something similar to Node.js EventEmitter",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node test",
+    "prepublish": "npm run build & npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dkh-dev/event-emitter.git"
+  },
+  "devDependencies": {
+    "@dkh-dev/tape-counter": "0.0.2",
+    "@types/tape": "^4.2.33",
+    "tape": "^4.9.2",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.1"
+  },
+  "keywords": [
+    "event",
+    "events",
+    "emitter",
+    "emit",
+    "listener"
+  ],
+  "author": "Hoang <dangkyokhoang@gmail.com> (https://dangkyokhoang.github.io/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dkh-dev/event-emitter/issues"
+  },
+  "homepage": "https://github.com/dkh-dev/event-emitter#readme"
+}
