@@ -1,6 +1,6 @@
 {
   "name": "@dkh-dev/event-emitter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Something similar to Node.js EventEmitter",
   "main": "index.js",
   "types": "index.d.ts",
@@ -18,7 +18,7 @@
     "url": "git+ssh://git@github.com/dkh-dev/event-emitter.git"
   },
   "devDependencies": {
-    "@dkh-dev/tape-counter": "0.0.2",
+    "@dkh-dev/tape-helper": "0.0.1",
     "@types/tape": "^4.2.33",
     "tape": "^4.9.2",
     "ts-node": "^8.0.2",

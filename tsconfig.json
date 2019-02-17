@@ -6,7 +6,6 @@
     "removeComments": true,
     "declaration": true,
     "strict": true,
-    "strictPropertyInitialization": false,
     "esModuleInterop": true
   },
   "files": [

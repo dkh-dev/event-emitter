@@ -4,25 +4,32 @@ class EventEmitter {
     constructor() {
         this.listeners = new Map();
     }
-    on(type, listener, options) {
+    on(type, listener, options = {}) {
+        const { listenerAfter } = options;
+        if (listener === listenerAfter) {
+            return this;
+        }
         const list = this.listeners.get(type);
         if (list) {
-            const listenerAfter = options && options.listenerAfter;
             const index = list.indexOf(listener);
-            const indexAfter = listenerAfter
-                ? list.indexOf(listenerAfter)
-                : -1;
-            if (index !== -1) {
-                if (index + 1 === indexAfter) {
-                    return this;
+            const indexAfter = listenerAfter ? list.indexOf(listenerAfter) : -1;
+            if (index === -1) {
+                if (indexAfter === -1) {
+                    list.push(listener);
                 }
+                else {
+                    list.splice(indexAfter, 0, listener);
+                }
+            }
+            else if (index + 1 !== indexAfter) {
                 list.splice(index, 1);
-            }
-            if (indexAfter !== -1) {
-                list.splice(indexAfter, 0, listener);
-            }
-            else {
-                list.push(listener);
+                const newIndexAfter = indexAfter - (index < indexAfter ? 1 : 0);
+                if (indexAfter === -1) {
+                    list.push(listener);
+                }
+                else {
+                    list.splice(newIndexAfter, 0, listener);
+                }
             }
         }
         else {
@@ -48,10 +55,7 @@ class EventEmitter {
     }
     hasListener(type, listener) {
         const list = this.listeners.get(type);
-        if (list) {
-            return list.includes(listener);
-        }
-        return false;
+        return !!list && list.includes(listener);
     }
 }
 exports.default = EventEmitter;

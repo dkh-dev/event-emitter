@@ -2,6 +2,12 @@
 
 _Something similar to Node.js EventEmitter._
 
+## Installation
+
+````bash
+npm install @dkh-dev/event-emitter
+````
+
 ## Examples
 
 Example 1
@@ -11,19 +17,15 @@ import EventEmitter from '@dkh-dev/event-emitter';
 
 const emitter = new EventEmitter();
 
-const listener = (...args: any): void => {
-    console.log(...args);
-};
-emitter.on('test', listener);
+const listener = (...args: any): void => console.log(...args);
+const anotherListener = (): void => console.log('Hi there!');
 
-const anotherListener = (): void => {
-    console.log('Hello!');
-};
+emitter.on('test', listener);
 // Insert anotherListener before listener
 emitter.on('test', anotherListener, { listenerAfter: listener });
 
 emitter.emit('test', { error: false, result: [ 'Yay!' ] });
-// => Hello!
+// => Hi there!
 //    { error: false, result: [ 'Yay!' ] }
 ````
 
@@ -51,7 +53,7 @@ class Phone extends EventEmitter {
 const phone = new Phone("Mom's phone");
 
 // Mom's setting
-phone.on('unlocked', () => console.warn('Is that you, kid?'));
+phone.on('unlocked', (): void => console.warn('Is that you, kid?'));
 
 // When 'someone' unlocks the phone
 phone.unlock();
