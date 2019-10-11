@@ -1,61 +1,85 @@
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict'
+
+
 class EventEmitter {
     constructor() {
-        this.listeners = new Map();
+        this.listeners = new Map()
     }
+
+    // eslint-disable-next-line max-statements
     on(type, listener, options = {}) {
-        const { listenerAfter } = options;
+        const { listenerAfter } = options
+
         if (listener === listenerAfter) {
-            return this;
+            return this
         }
-        const list = this.listeners.get(type);
+
+        const list = this.listeners.get(type)
+
         if (list) {
-            const index = list.indexOf(listener);
-            const indexAfter = listenerAfter ? list.indexOf(listenerAfter) : -1;
+            const index = list.indexOf(listener)
+            const indexAfter = listenerAfter ? list.indexOf(listenerAfter) : -1
+
             if (index === -1) {
+                // If listener doesn't exists
                 if (indexAfter === -1) {
-                    list.push(listener);
+                    //     and if listenerAfter doesn't exists
+                    //     append it to the list
+                    list.push(listener)
+                } else {
+                    //     insert it before listenerAfter
+                    list.splice(indexAfter, 0, listener)
                 }
-                else {
-                    list.splice(indexAfter, 0, listener);
+            } else if (index + 1 !== indexAfter) {
+                // if it exists but it isn't before listenerAfter
+                // temprarily remove it from the list
+                list.splice(index, 1)
+
+                // As an listener has been removed from the list
+                // indexAfter might have been updated
+                const newIndexAfter = indexAfter - (index < indexAfter ? 1 : 0)
+
+                // and now adding it to the list
+                if (indexAfter === -1) {
+                    list.push(listener)
+                } else {
+                    list.splice(newIndexAfter, 0, listener)
                 }
             }
-            else if (index + 1 !== indexAfter) {
-                list.splice(index, 1);
-                const newIndexAfter = indexAfter - (index < indexAfter ? 1 : 0);
-                if (indexAfter === -1) {
-                    list.push(listener);
-                }
-                else {
-                    list.splice(newIndexAfter, 0, listener);
-                }
-            }
+        } else {
+            this.listeners.set(type, [ listener ])
         }
-        else {
-            this.listeners.set(type, [listener]);
-        }
-        return this;
+
+        return this
     }
+
     off(type, listener) {
-        const list = this.listeners.get(type);
+        const list = this.listeners.get(type)
+
         if (list) {
-            const index = list.indexOf(listener);
+            const index = list.indexOf(listener)
+
             if (index !== -1) {
-                list.splice(index, 1);
+                list.splice(index, 1)
             }
         }
-        return this;
+
+        return this
     }
+
     emit(type, ...args) {
-        const list = this.listeners.get(type);
+        const list = this.listeners.get(type)
+
         if (list) {
-            list.forEach(listener => listener.apply(this, args));
+            list.forEach(listener => listener.apply(this, args))
         }
     }
+
     hasListener(type, listener) {
-        const list = this.listeners.get(type);
-        return !!list && list.includes(listener);
+        const list = this.listeners.get(type)
+
+        return Boolean(list) && list.includes(listener)
     }
 }
-exports.default = EventEmitter;
+
+module.exports = EventEmitter

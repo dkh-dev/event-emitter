@@ -1,17 +1,14 @@
 {
   "name": "@dkh-dev/event-emitter",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Something similar to Node.js EventEmitter",
   "main": "index.js",
-  "types": "index.d.ts",
   "files": [
-    "index.js",
-    "index.d.ts"
+    "index.js"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "ts-node test",
-    "prepublish": "npm run build & npm run test"
+    "test": "node test",
+    "prepublish": "npm run test"
   },
   "repository": {
     "type": "git",
