@@ -1,10 +1,11 @@
 {
   "name": "@dkh-dev/event-emitter",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Something similar to Node.js EventEmitter",
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "lib/*"
   ],
   "scripts": {
     "test": "node test",
@@ -15,6 +16,7 @@
     "url": "git+ssh://git@github.com/dkh-dev/event-emitter.git"
   },
   "devDependencies": {
+    "@dkh-dev/eslint-config": "^1.6.2",
     "@dkh-dev/tape-helper": "0.0.1",
     "@types/tape": "^4.2.33",
     "tape": "^4.9.2",

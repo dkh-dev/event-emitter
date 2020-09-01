@@ -1,85 +1,63 @@
 'use strict'
 
+const insert = require('./lib/utils/insert')
 
 class EventEmitter {
-    constructor() {
-        this.listeners = new Map()
+  constructor() {
+    this.listeners = new Map()
+  }
+
+  // eslint-disable-next-line max-statements
+  on(type, listener, options = {}) {
+    const { listenerAfter } = options
+
+    if (listener === listenerAfter) {
+      return this
     }
 
-    // eslint-disable-next-line max-statements
-    on(type, listener, options = {}) {
-        const { listenerAfter } = options
+    const listeners = this.listeners.get(type)
 
-        if (listener === listenerAfter) {
-            return this
-        }
-
-        const list = this.listeners.get(type)
-
-        if (list) {
-            const index = list.indexOf(listener)
-            const indexAfter = listenerAfter ? list.indexOf(listenerAfter) : -1
-
-            if (index === -1) {
-                // If listener doesn't exists
-                if (indexAfter === -1) {
-                    //     and if listenerAfter doesn't exists
-                    //     append it to the list
-                    list.push(listener)
-                } else {
-                    //     insert it before listenerAfter
-                    list.splice(indexAfter, 0, listener)
-                }
-            } else if (index + 1 !== indexAfter) {
-                // if it exists but it isn't before listenerAfter
-                // temprarily remove it from the list
-                list.splice(index, 1)
-
-                // As an listener has been removed from the list
-                // indexAfter might have been updated
-                const newIndexAfter = indexAfter - (index < indexAfter ? 1 : 0)
-
-                // and now adding it to the list
-                if (indexAfter === -1) {
-                    list.push(listener)
-                } else {
-                    list.splice(newIndexAfter, 0, listener)
-                }
-            }
-        } else {
-            this.listeners.set(type, [ listener ])
-        }
-
-        return this
+    if (listeners) {
+      insert(listeners, listener, listenerAfter)
+    } else {
+      this.listeners.set(type, [ listener ])
     }
 
-    off(type, listener) {
-        const list = this.listeners.get(type)
+    return this
+  }
 
-        if (list) {
-            const index = list.indexOf(listener)
+  off(type, listener) {
+    const listeners = this.listeners.get(type)
 
-            if (index !== -1) {
-                list.splice(index, 1)
-            }
-        }
+    if (listeners) {
+      const index = listeners.indexOf(listener)
 
-        return this
+      if (index !== -1) {
+        listeners.splice(index, 1)
+      }
     }
 
-    emit(type, ...args) {
-        const list = this.listeners.get(type)
+    return this
+  }
 
-        if (list) {
-            list.forEach(listener => listener.apply(this, args))
-        }
-    }
+  emit(type, ...args) {
+    const listeners = [
+      ...this.listeners.get(this.constructor.wildcard) || [],
+      ...this.listeners.get(type) || [],
+    ]
 
-    hasListener(type, listener) {
-        const list = this.listeners.get(type)
+    listeners.forEach(listener => listener.apply(this, args))
 
-        return Boolean(list) && list.includes(listener)
-    }
+    return this
+  }
+
+  hasListener(type, listener) {
+    const list = this.listeners.get(type)
+
+    return Boolean(list) && list.includes(listener)
+  }
 }
+
+EventEmitter.wildcard = '*'
 
 module.exports = EventEmitter
