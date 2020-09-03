@@ -41,12 +41,13 @@ class EventEmitter {
   }
 
   emit(type, ...args) {
-    const listeners = [
-      ...this.listeners.get(this.constructor.wildcard) || [],
-      ...this.listeners.get(type) || [],
-    ]
+    let listeners = this.listeners.get(this.constructor.wildcard) || []
 
-    listeners.forEach(listener => listener.apply(this, args))
+    listeners.forEach(listener => listener(type, ...args))
+
+    listeners = this.listeners.get(type) || []
+
+    listeners.forEach(listener => listener(...args))
 
     return this
   }
