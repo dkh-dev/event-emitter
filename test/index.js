@@ -1,81 +1,30 @@
-'use strict'
-
-const test = require('tape')
-const { default: TapeHelper } = require('@dkh-dev/tape-helper')
-
-const EventEmitter = require('..')
+import test from 'tape'
+import EventEmitter from '@dkh-dev/event-emitter'
 
 
 // eslint-disable-next-line max-statements
-test('Test basic functionalities', t => {
-  const { counter } = new TapeHelper(t)
-  const { expect, count } = counter
-
-  const expect1 = () => expect(1)
-  const expect3 = () => expect(3)
-  const expect4 = () => expect(4)
-  const expect5 = () => expect(5)
-  const expect6 = () => expect(6)
-  const expect7 = () => expect(7)
-
-  t.plan(11)
+test('EventEmitter', t => {
+  t.plan(3)
 
   const emitter = new EventEmitter()
-  const payload = { some: 'text' }
+  let i = 0
 
-  emitter.on('a', expect1)
-  // listeners.a [ expect1 ]
-  emitter.on('a', expect1)
-  // listeners.a [ expect1 ]
+  const first = () => t.fail(`shouldn't have been called`)
+  const second = () => t.fail(`shouldn't have been called`)
+  const third = () => t.equal(++i, 1)
 
-  // count is to be inserted before expect3
+  emitter.on('test', first)
+  emitter.on('test', second)
+  emitter.on('test', third)
+  emitter.off('test', second)
+  emitter.off('test', first)
 
-  emitter.on('a', expect3)
-  // listeners.a [ expect1, expect3 ]
-  emitter.on('a', count, { listenerAfter: expect1 })
-  // listeners.a [ count, expect1, expect3 ]
-  // No! Please insert count right before expect3
-  emitter.on('a', count, { listenerAfter: expect3 })
-  // listeners.a [ expect1, count, expect3 ]
-  // If listener and listenerAfter are the same,
-  // nothing should happen
-  emitter.on('a', count, { listenerAfter: count })
-  // listeners.a [ expect1, count, expect3 ]
+  emitter.emit('test')
 
-  emitter.on('b', expect4)
-  // listeners.b [ expect4 ]
+  t.equal(emitter.hasListener('test', first), false)
+  t.equal(emitter.hasListener('test', third), true)
 
-  emitter.on('b', expect7, { listenerAfter: expect4 })
-  // listeners.b [ expect7, expect4 ]
-  // Oops! Something went wrong...
-  emitter.off('b', expect7)
-  // listeners.b [ expect4 ]
+  emitter.off('test', third)
 
-  // If listenerAfter does not exist,
-  // listener should be put after the last listener in the list
-  emitter.on('b', expect5, { listenerAfter: expect7 })
-  // listeners.b [ expect4, expect5 ]
-
-  emitter.on('c', (...args) => {
-    t.equal(args.length, 1, 'args.length should be 1')
-    t.equal(args[ 0 ], payload, 'args.0 should be payload')
-  })
-
-  t.equal(emitter.hasListener('a', expect1), true, 'should be true')
-  t.equal(emitter.hasListener('b', expect1), false, 'should be false')
-  t.equal(emitter.hasListener('d', expect1), false, 'should be false')
-
-  // Should be ok attempting to remove an unregistered listener
-  t.doesNotThrow(() => {
-    emitter.off('b', expect1)
-    emitter.off('d', expect1)
-  })
-
-  emitter.emit('a')
-  emitter.emit('b', payload, 'additional data')
-  emitter.emit('c', payload)
-
-  emitter.on('*', expect6)
-
-  emitter.emit('shouldcallwildcard')
+  emitter.emit('test')
 })

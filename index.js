@@ -1,24 +1,13 @@
-'use strict'
-
-const insert = require('./lib/utils/insert')
-
 class EventEmitter {
   constructor() {
     this.listeners = new Map()
   }
 
-  // eslint-disable-next-line max-statements
-  on(type, listener, options = {}) {
-    const { listenerAfter } = options
+  on(type, listener) {
+    const stack = this.listeners.get(type)
 
-    if (listener === listenerAfter) {
-      return this
-    }
-
-    const listeners = this.listeners.get(type)
-
-    if (listeners) {
-      insert(listeners, listener, listenerAfter)
+    if (stack) {
+      stack.push(listener)
     } else {
       this.listeners.set(type, [ listener ])
     }
@@ -27,13 +16,13 @@ class EventEmitter {
   }
 
   off(type, listener) {
-    const listeners = this.listeners.get(type)
+    const stack = this.listeners.get(type)
 
-    if (listeners) {
-      const index = listeners.indexOf(listener)
+    if (stack) {
+      const index = stack.indexOf(listener)
 
       if (index !== -1) {
-        listeners.splice(index, 1)
+        stack.splice(index, 1)
       }
     }
 
@@ -41,13 +30,13 @@ class EventEmitter {
   }
 
   emit(type, ...args) {
-    let listeners = this.listeners.get(this.constructor.wildcard) || []
+    const stack = this.listeners.get(type)
 
-    listeners.forEach(listener => listener(type, ...args))
-
-    listeners = this.listeners.get(type) || []
-
-    listeners.forEach(listener => listener(...args))
+    if (stack) {
+      stack
+        .slice()
+        .forEach(listener => listener(...args))
+    }
 
     return this
   }
@@ -55,10 +44,8 @@ class EventEmitter {
   hasListener(type, listener) {
     const list = this.listeners.get(type)
 
-    return Boolean(list) && list.includes(listener)
+    return !!list && list.includes(listener)
   }
 }
 
-EventEmitter.wildcard = '*'
-
-module.exports = EventEmitter
+export default EventEmitter

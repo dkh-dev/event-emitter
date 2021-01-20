@@ -1,27 +1,23 @@
 {
   "name": "@dkh-dev/event-emitter",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "Something similar to Node.js EventEmitter",
-  "main": "index.js",
+  "type": "module",
   "files": [
-    "index.js",
-    "lib/*"
+    "index.js"
   ],
+  "exports": "./index.js",
   "scripts": {
     "test": "node test",
     "prepublish": "npm run test"
   },
+  "devDependencies": {
+    "@dkh-dev/eslint-config": "^1.6.2",
+    "tape": "^5.1.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/dkh-dev/event-emitter.git"
-  },
-  "devDependencies": {
-    "@dkh-dev/eslint-config": "^1.6.2",
-    "@dkh-dev/tape-helper": "0.0.1",
-    "@types/tape": "^4.2.33",
-    "tape": "^4.9.2",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.1"
   },
   "keywords": [
     "event",

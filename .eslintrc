@@ -1,3 +1,6 @@
 {
-  "extends": "@dkh-dev/eslint-config"
+  "extends": "@dkh-dev/eslint-config",
+  "parserOptions": {
+    "sourceType": "module"
+  }
 }
