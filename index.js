@@ -19,7 +19,7 @@ class EventEmitter {
     const stack = this.listeners.get(type)
 
     if (stack) {
-      const index = stack.indexOf(listener)
+      const index = stack.lastIndexOf(listener)
 
       if (index !== -1) {
         stack.splice(index, 1)
@@ -42,9 +42,9 @@ class EventEmitter {
   }
 
   hasListener(type, listener) {
-    const list = this.listeners.get(type)
+    const stack = this.listeners.get(type)
 
-    return !!list && list.includes(listener)
+    return !!stack && stack.includes(listener)
   }
 }
 

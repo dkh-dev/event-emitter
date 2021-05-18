@@ -1,6 +1,6 @@
 {
   "name": "@dkh-dev/event-emitter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Something similar to Node.js EventEmitter",
   "type": "module",
   "files": [
